@@ -20,6 +20,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Form      Form[]
 }
 
 model Account {
@@ -75,4 +76,14 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+model Form {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  fields    Json
+  published Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
