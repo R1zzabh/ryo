@@ -1,9 +1,18 @@
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { Button } from "~~/components/ui/button";
 import { Textarea } from "~~/components/ui/textarea";
 import { generateForm } from "~~/lib/ai";
+import { auth } from "~~/lib/auth";
+import { db } from "~~/lib/db";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
+
+  if (!session || !session.user) {
+    redirect("/");
+  }
+
   return (
     <div className="flex flex-col items-center min-h-screen justify-center text-center w-full max-w-2xl mx-auto p-4 gap-y-4">
       <p className="text-lg font-semibold">Enter details about your form</p>
@@ -11,6 +20,7 @@ export default function HomePage() {
       <form
         action={async (formData: FormData) => {
           "use server";
+
           const input = formData.get("input");
 
           // validate the form as a string
@@ -18,7 +28,24 @@ export default function HomePage() {
 
           const form = await generateForm(result);
 
-          console.log(form);
+          const createdForm = await db.form.create({
+            // @ts-expect-error prisma bug
+            data: {
+              fields: JSON.stringify(form),
+              userId: session.user!.id!,
+              user: {
+                connect: {
+                  id: session.user!.id!,
+                  email: session.user!.email!,
+                },
+              },
+            },
+            select: {
+              id: true,
+            },
+          });
+
+          redirect(`/form/${createdForm.id}`);
         }}
         className="w-full flex flex-col gap-y-4"
       >
