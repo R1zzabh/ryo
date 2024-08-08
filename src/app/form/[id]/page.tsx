@@ -1,7 +1,8 @@
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { auth } from "~~/lib/auth";
 import { db } from "~~/lib/db";
 import { FormSchema } from "~~/lib/dsl";
+import DynamicForm from "~~/components/dynamic-form";
 
 export default async function FormPage(params: { params: { id: string } }) {
   const session = await auth();
@@ -13,19 +14,20 @@ export default async function FormPage(params: { params: { id: string } }) {
   const form = await db.form.findUnique({
     where: {
       id: params.params.id,
-      userId: session.user?.id,
     },
   });
 
+  if (!form) {
+    return notFound();
+  }
+
   // @ts-expect-error it's always a string
-  const schema = FormSchema.parse(JSON.parse(form?.schema ?? "{}"));
+  const schema = FormSchema.parse(JSON.parse(form.schema));
 
   return (
-    <div>
-      <h1>{schema.title}</h1>
-      <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}>
-        {JSON.stringify(schema, null, 2)}
-      </pre>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">{schema.title}</h1>
+      <DynamicForm schema={schema} />
     </div>
   );
 }
