@@ -16,6 +16,10 @@ type FieldProps<T extends z.ZodType<any, any>> = {
   onChange: (value: any) => void;
 };
 
+const RequiredStar: React.FC = () => (
+  <span className="text-red-500 mx-1">*</span>
+);
+
 export const ShortAnswerComponent: React.FC<
   FieldProps<typeof ShortAnswerField>
 > = ({ field, value, onChange }) => (
@@ -25,6 +29,7 @@ export const ShortAnswerComponent: React.FC<
       className="block mb-2 text-sm font-bold text-neutral-700"
     >
       {field.label}
+      {field.required && <RequiredStar />}
     </label>
     <input
       type="text"
@@ -48,6 +53,7 @@ export const LongAnswerComponent: React.FC<
       className="block mb-2 text-sm font-bold text-neutral-700"
     >
       {field.label}
+      {field.required && <RequiredStar />}
     </label>
     <textarea
       id={field.id}
@@ -72,6 +78,7 @@ export const EmailComponent: React.FC<FieldProps<typeof EmailField>> = ({
       className="block mb-2 text-sm font-bold text-neutral-700"
     >
       {field.label}
+      {field.required && <RequiredStar />}
     </label>
     <input
       type="email"
@@ -97,6 +104,7 @@ export const NumberComponent: React.FC<FieldProps<typeof NumberField>> = ({
       className="block mb-2 text-sm font-bold text-neutral-700"
     >
       {field.label}
+      {field.required && <RequiredStar />}
     </label>
     <input
       type="number"
@@ -117,6 +125,7 @@ export const MultipleChoiceComponent: React.FC<
   <fieldset className="mb-4 p-4 border rounded-lg">
     <legend className="text-sm font-bold text-neutral-700">
       {field.label}
+      {field.required && <RequiredStar />}
     </legend>
     {field.options.map((option, index) => (
       <div key={index} className="mb-2">
@@ -142,6 +151,7 @@ export const MultiSelectComponent: React.FC<
   <fieldset className="mb-4 p-4 border rounded-lg">
     <legend className="text-sm font-bold text-neutral-700">
       {field.label}
+      {field.required && <RequiredStar />}
     </legend>
     {field.options.map((option, index) => (
       <div key={index} className="mb-2">
