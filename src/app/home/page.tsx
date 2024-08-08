@@ -29,7 +29,7 @@ export default async function HomePage() {
           const createdForm = await db.form.create({
             // @ts-expect-error prisma bug
             data: {
-              fields: JSON.stringify(form),
+              schema: JSON.stringify(form),
               userId: session.user!.id!,
               user: {
                 connect: {
