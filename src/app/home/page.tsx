@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { Button } from "~~/components/ui/button";
-import { Textarea } from "~~/components/ui/textarea";
 import { generateForm } from "~~/lib/ai";
 import { auth } from "~~/lib/auth";
 import { db } from "~~/lib/db";
@@ -49,12 +47,17 @@ export default async function HomePage() {
         }}
         className="w-full flex flex-col gap-y-4"
       >
-        <Textarea
+        <textarea
           name="input"
           placeholder="A survey form titled 'Survey' with a required name field, a required 'Do you have a pet?' radio button with 'Yes' and 'No' options, and a required 'What is your pet's name?' text field that only shows if 'Yes' is selected."
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded h-32"
         />
-        <Button type="submit">Create</Button>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+        >
+          Create
+        </button>
       </form>
     </div>
   );

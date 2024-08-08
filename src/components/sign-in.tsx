@@ -1,4 +1,3 @@
-import { Button } from "~~/components/ui/button";
 import { signIn } from "~~/lib/auth";
 
 export function SignIn() {
@@ -9,7 +8,12 @@ export function SignIn() {
         await signIn("discord", { redirectTo: "/home" });
       }}
     >
-      <Button type="submit">Signin with Discord</Button>
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded-md"
+      >
+        Signin with Discord
+      </button>
     </form>
   );
 }
