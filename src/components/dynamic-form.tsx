@@ -14,9 +14,10 @@ import {
 
 type FormData = Record<string, any>;
 
-const DynamicForm: React.FC<{ schema: z.infer<typeof FormSchema> }> = ({
-  schema,
-}) => {
+const DynamicForm: React.FC<{
+  formId: string;
+  schema: z.infer<typeof FormSchema>;
+}> = ({ formId, schema }) => {
   const [formData, setFormData] = useState<FormData>({});
 
   useEffect(() => {
@@ -76,10 +77,25 @@ const DynamicForm: React.FC<{ schema: z.infer<typeof FormSchema> }> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Here you can add your form submission logic
+    try {
+      const response = await fetch("/api/submit-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ formId, data: formData }),
+      });
+      if (response.ok) {
+        console.log("Form submitted successfully");
+        // Optionally, reset the form or show a success message
+      } else {
+        console.error("Form submission failed");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (

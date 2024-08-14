@@ -1,16 +1,18 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { generateForm } from "~~/lib/ai";
-import { auth } from "~~/lib/auth";
-import { db } from "~~/lib/db";
 import { SubmitButton } from "./submit-button";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function HomePage() {
-  const session = await auth();
+  console.log("HomePage");
+  const { userId } = auth();
 
-  if (!session || !session.user) {
-    redirect("/");
-  }
+  // const session = await auth();
+
+  // if (!session || !session.user) {
+  //   redirect("/");
+  // }
 
   async function createForm(formData: FormData) {
     "use server";
@@ -22,24 +24,24 @@ export default async function HomePage() {
 
     const form = await generateForm(result);
 
-    const createdForm = await db.form.create({
-      // @ts-expect-error prisma bug
-      data: {
-        schema: JSON.stringify(form),
-        userId: session?.user!.id!,
-        user: {
-          connect: {
-            id: session?.user!.id!,
-            email: session?.user!.email!,
-          },
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
+    // const createdForm = await db.form.create({
+    //   // @ts-expect-error prisma bug
+    //   data: {
+    //     schema: JSON.stringify(form),
+    //     userId: session?.user!.id!,
+    //     user: {
+    //       connect: {
+    //         id: session?.user!.id!,
+    //         email: session?.user!.email!,
+    //       },
+    //     },
+    //   },
+    //   select: {
+    //     id: true,
+    //   },
+    // });
 
-    redirect(`/form/${createdForm.id}`);
+    // redirect(`/form/${createdForm.id}`);
   }
 
   return (
