@@ -15,7 +15,7 @@ import {
 type FormData = Record<string, any>;
 
 const DynamicForm: React.FC<{
-  formId: string;
+  formId: number;
   schema: z.infer<typeof FormSchema>;
 }> = ({ formId, schema }) => {
   const [formData, setFormData] = useState<FormData>({});
@@ -87,7 +87,7 @@ const DynamicForm: React.FC<{
         },
         body: JSON.stringify({ formId, data: formData }),
       });
-      if (response.ok) {
+      if (response.status === 200) {
         console.log("Form submitted successfully");
         // Optionally, reset the form or show a success message
       } else {
