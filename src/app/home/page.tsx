@@ -1,14 +1,16 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { generateForm } from "~~/lib/ai";
-import { auth } from "~~/lib/auth";
-import { db } from "~~/lib/db";
 import { SubmitButton } from "./submit-button";
+import { auth } from "@clerk/nextjs/server";
+import { db } from "~~/lib/db";
+import { forms } from "~~/lib/db/schema";
 
 export default async function HomePage() {
-  const session = await auth();
+  console.log("HomePage");
+  const { userId } = auth();
 
-  if (!session || !session.user) {
+  if (!userId) {
     redirect("/");
   }
 
@@ -16,30 +18,25 @@ export default async function HomePage() {
     "use server";
 
     const input = formData.get("input");
+    const { userId } = auth();
+    if (!userId) {
+      throw new Error("User not found");
+    }
 
     // validate the form as a string
     const result = z.string().parse(input);
 
     const form = await generateForm(result);
 
-    const createdForm = await db.form.create({
-      // @ts-expect-error prisma bug
-      data: {
+    const createdForm = await db
+      .insert(forms)
+      .values({
+        userId: userId,
         schema: JSON.stringify(form),
-        userId: session?.user!.id!,
-        user: {
-          connect: {
-            id: session?.user!.id!,
-            email: session?.user!.email!,
-          },
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
+      })
+      .returning({ id: forms.id });
 
-    redirect(`/form/${createdForm.id}`);
+    redirect(`/form/${createdForm[0].id}`);
   }
 
   return (
