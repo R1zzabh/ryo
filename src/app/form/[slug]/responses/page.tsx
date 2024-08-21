@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { db } from "~~/lib/db";
 import { forms, formResponses } from "~~/lib/db/schema";
@@ -8,7 +8,7 @@ import { FormSchema } from "~~/lib/dsl";
 export default async function FormResponsesPage({
   params,
 }: {
-  params: { id: string };
+  params: { slug: string };
 }) {
   const { userId } = auth();
 
@@ -16,8 +16,10 @@ export default async function FormResponsesPage({
     redirect("/");
   }
 
+  const [slug, urlId] = params.slug.split("-");
+
   const form = await db.query.forms.findFirst({
-    where: eq(forms.id, Number(params.id)),
+    where: and(eq(forms.slug, slug), eq(forms.urlId, urlId)),
   });
 
   if (!form) {
@@ -28,7 +30,7 @@ export default async function FormResponsesPage({
 
   // Fetch responses for the form
   const responses = await db.query.formResponses.findMany({
-    where: eq(formResponses.formId, Number(params.id)),
+    where: eq(formResponses.formId, form.id),
   });
 
   // Organize responses by field

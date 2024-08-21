@@ -14,6 +14,7 @@
     "ai": "^3.2.17",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
+    "nanoid": "^5.0.7",
     "next": "15.0.0-rc.0",
     "postgres": "^3.4.4",
     "react": "19.0.0-rc-f994737d14-20240522",
@@ -22,8 +23,8 @@
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^18.3.4",
+    "@types/react-dom": "^18.3.0",
     "drizzle-kit": "^0.24.0",
     "eslint": "^8",
     "eslint-config-next": "15.0.0-rc.0",

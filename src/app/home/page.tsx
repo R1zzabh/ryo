@@ -5,6 +5,7 @@ import { SubmitButton } from "./submit-button";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "~~/lib/db";
 import { forms } from "~~/lib/db/schema";
+import { generateShortId } from "~~/lib/utils";
 
 export default async function HomePage() {
   console.log("HomePage");
@@ -23,20 +24,28 @@ export default async function HomePage() {
       throw new Error("User not found");
     }
 
-    // validate the form as a string
     const result = z.string().parse(input);
 
     const form = await generateForm(result);
+
+    const slug = form.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+    const urlId = generateShortId();
+    const fullSlug = `${slug}-${urlId}`;
 
     const createdForm = await db
       .insert(forms)
       .values({
         userId: userId,
         schema: JSON.stringify(form),
+        slug: slug,
+        urlId: urlId,
       })
       .returning({ id: forms.id });
 
-    redirect(`/form/${createdForm[0].id}`);
+    redirect(`/form/${fullSlug}`);
   }
 
   return (
