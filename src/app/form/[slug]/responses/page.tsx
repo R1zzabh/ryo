@@ -16,7 +16,12 @@ export default async function FormResponsesPage({
     redirect("/");
   }
 
-  const [slug, urlId] = params.slug.split("-");
+  // Find the last hyphen in the slug
+  const lastHyphenIndex = params.slug.lastIndexOf("-");
+
+  // Extract the slug and urlId
+  const slug = params.slug.slice(0, lastHyphenIndex);
+  const urlId = params.slug.slice(lastHyphenIndex + 1);
 
   const form = await db.query.forms.findFirst({
     where: and(eq(forms.slug, slug), eq(forms.urlId, urlId)),
