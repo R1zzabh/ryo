@@ -49,7 +49,7 @@ export default async function FormPage({
           </Link>
         )}
       </div>
-      <DynamicForm formId={form.id} schema={schema} />
+      <DynamicForm slug={params.slug} formId={form.id} schema={schema} />
     </div>
   );
 }

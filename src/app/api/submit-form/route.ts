@@ -1,24 +1,49 @@
 import { NextResponse } from "next/server";
 import { db } from "~~/lib/db";
-import { formResponses } from "~~/lib/db/schema";
+import { formResponses, formSubmissions } from "~~/lib/db/schema";
+import { and, eq } from "drizzle-orm";
 
 export async function POST(req: Request) {
-  const { formId, data } = await req.json();
+  const { formId, data, submissionId } = await req.json();
   try {
-    console.log("formId", formId);
-    console.log("data", data);
-    const formResponse = await db
-      .insert(formResponses)
-      .values({
+    // Check if this submission ID has been used before
+    const existingSubmission = await db.query.formSubmissions.findFirst({
+      where: and(
+        eq(formSubmissions.formId, formId),
+        eq(formSubmissions.submissionId, submissionId)
+      ),
+    });
+
+    if (existingSubmission) {
+      return NextResponse.json(
+        { error: "Form has already been submitted" },
+        { status: 409 }
+      );
+    }
+
+    // If not, proceed with saving the response and recording the submission
+    const formResponse = await db.transaction(async (tx) => {
+      const response = await tx
+        .insert(formResponses)
+        .values({
+          formId,
+          data: JSON.stringify(data),
+        })
+        .returning({ id: formResponses.id });
+
+      await tx.insert(formSubmissions).values({
         formId,
-        data: JSON.stringify(data),
-      })
-      .returning({ id: formResponses.id });
+        submissionId,
+        responseId: response[0].id,
+      });
+
+      return response[0];
+    });
 
     return NextResponse.json({
       status: 200,
       success: true,
-      id: formResponse[0].id,
+      id: formResponse.id,
     });
   } catch (error) {
     console.error("Error saving form response:", error);

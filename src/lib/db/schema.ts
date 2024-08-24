@@ -35,3 +35,15 @@ export const formResponses = pgTable("form_responses", {
     .references(() => forms.id, { onDelete: "cascade" }),
   data: jsonb("data").notNull(),
 });
+
+export const formSubmissions = pgTable("form_submissions", {
+  id: serial("id").primaryKey(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  formId: integer("form_id")
+    .notNull()
+    .references(() => forms.id, { onDelete: "cascade" }),
+  submissionId: text("submission_id").notNull(),
+  responseId: integer("response_id")
+    .notNull()
+    .references(() => formResponses.id, { onDelete: "cascade" }),
+});
