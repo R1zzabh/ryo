@@ -49,17 +49,33 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen justify-center text-center w-full max-w-2xl mx-auto p-4 gap-y-4">
-      <p className="text-lg font-semibold">Enter details about your form</p>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white shadow-sm rounded-lg p-6">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">
+            Create Your Form
+          </h2>
 
-      <form action={createForm} className="w-full flex flex-col gap-y-4">
-        <textarea
-          name="input"
-          placeholder="A survey form titled 'Survey' with a required name field, a required 'Do you have a pet?' radio button with 'Yes' and 'No' options, and a required 'What is your pet's name?' text field that only shows if 'Yes' is selected."
-          className="w-full p-2 border rounded h-32"
-        />
-        <SubmitButton />
-      </form>
+          <form action={createForm} className="space-y-4">
+            <div>
+              <label
+                htmlFor="input"
+                className="block mb-2 text-sm font-medium text-gray-700"
+              >
+                Enter details about your form
+              </label>
+              <textarea
+                id="input"
+                name="input"
+                placeholder="A survey form titled 'Survey' with a required name field, a required 'Do you have a pet?' radio button with 'Yes' and 'No' options, and a required 'What is your pet's name?' text field that only shows if 'Yes' is selected."
+                className="w-full px-3 py-2 text-sm text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out h-32 resize-none"
+                required
+              />
+            </div>
+            <SubmitButton />
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
