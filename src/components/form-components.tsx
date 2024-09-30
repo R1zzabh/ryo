@@ -17,7 +17,7 @@ type FieldProps<T extends z.ZodType<any, any>> = {
 };
 
 const RequiredStar: React.FC = () => (
-  <span className="text-red-500 ml-1">*</span>
+  <span className="text-matcha ml-1">*</span>
 );
 
 const Label: React.FC<{
@@ -27,7 +27,7 @@ const Label: React.FC<{
 }> = ({ htmlFor, required, children }) => (
   <label
     htmlFor={htmlFor}
-    className="block mb-2 text-sm font-medium text-neutral-700"
+    className="block mb-3 text-lg font-medium text-stone-700 text-left"
   >
     {children}
     {required && <RequiredStar />}
@@ -35,12 +35,12 @@ const Label: React.FC<{
 );
 
 const inputClasses =
-  "w-full px-3 py-2 text-sm text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out";
+  "w-full px-3 py-2 text-base text-stone-700 bg-stone-50 border border-stone-200 rounded-md focus:outline-none focus:ring-2 focus:ring-matcha focus:border-transparent transition duration-300 ease-in-out placeholder-stone-400";
 
 export const ShortAnswerComponent: React.FC<
   FieldProps<typeof ShortAnswerField>
 > = ({ field, value, onChange }) => (
-  <div className="mb-4">
+  <div className="mb-6">
     <Label htmlFor={field.id} required={field.required}>
       {field.label}
     </Label>
@@ -60,7 +60,7 @@ export const ShortAnswerComponent: React.FC<
 export const LongAnswerComponent: React.FC<
   FieldProps<typeof LongAnswerField>
 > = ({ field, value, onChange }) => (
-  <div className="mb-4">
+  <div className="mb-6">
     <Label htmlFor={field.id} required={field.required}>
       {field.label}
     </Label>
@@ -81,7 +81,7 @@ export const EmailComponent: React.FC<FieldProps<typeof EmailField>> = ({
   value,
   onChange,
 }) => (
-  <div className="mb-4">
+  <div className="mb-6">
     <Label htmlFor={field.id} required={field.required}>
       {field.label}
     </Label>
@@ -103,7 +103,7 @@ export const NumberComponent: React.FC<FieldProps<typeof NumberField>> = ({
   value,
   onChange,
 }) => (
-  <div className="mb-4">
+  <div className="mb-6">
     <Label htmlFor={field.id} required={field.required}>
       {field.label}
     </Label>
@@ -123,7 +123,7 @@ export const NumberComponent: React.FC<FieldProps<typeof NumberField>> = ({
 export const MultipleChoiceComponent: React.FC<
   FieldProps<typeof MultipleChoiceField>
 > = ({ field, value, onChange }) => (
-  <div className="mb-4">
+  <div className="mb-6">
     <Label htmlFor={field.id} required={field.required}>
       {field.label}
     </Label>
@@ -138,9 +138,9 @@ export const MultipleChoiceComponent: React.FC<
             checked={value === option}
             onChange={() => onChange(option)}
             required={field.required}
-            className="mr-2 text-blue-500 focus:ring-blue-500 h-4 w-4"
+            className="mr-2 text-matcha focus:ring-matcha h-4 w-4 border-stone-300 accent-matcha"
           />
-          <span className="text-sm text-gray-700">{option}</span>
+          <span className="text-base text-stone-700">{option}</span>
         </label>
       ))}
     </div>
@@ -150,7 +150,7 @@ export const MultipleChoiceComponent: React.FC<
 export const MultiSelectComponent: React.FC<
   FieldProps<typeof MultiSelectField>
 > = ({ field, value, onChange }) => (
-  <div className="mb-4">
+  <div className="mb-6">
     <Label htmlFor={field.id} required={field.required}>
       {field.label}
     </Label>
@@ -169,9 +169,9 @@ export const MultiSelectComponent: React.FC<
                 : (value || []).filter((v: string) => v !== option);
               onChange(newValue);
             }}
-            className="mr-2 text-blue-500 focus:ring-blue-500 h-4 w-4 rounded"
+            className="mr-2 text-matcha focus:ring-matcha h-4 w-4 rounded border-stone-300 accent-matcha"
           />
-          <span className="text-sm text-gray-700">{option}</span>
+          <span className="text-base text-stone-700">{option}</span>
         </label>
       ))}
     </div>

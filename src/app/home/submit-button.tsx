@@ -1,6 +1,7 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
+import { ArrowRight } from "lucide-react";
 
 export const SubmitButton = () => {
   const { pending } = useFormStatus();
@@ -9,9 +10,15 @@ export const SubmitButton = () => {
     <button
       type="submit"
       disabled={pending}
-      className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+      className="px-8 py-3 text-lg font-light text-stone-100 bg-matcha rounded-md hover:bg-[#3E4A46] transition-all duration-300 flex items-center justify-center mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      {pending ? "Creating..." : "Create Form"}
+      {pending ? (
+        "Creating..."
+      ) : (
+        <>
+          Create Form <ArrowRight className="inline-block ml-2" size={20} />
+        </>
+      )}
     </button>
   );
 };

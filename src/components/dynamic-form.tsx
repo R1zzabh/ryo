@@ -13,6 +13,7 @@ import {
   MultiSelectComponent,
 } from "./form-components";
 import { useRouter } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 
 type FormData = Record<string, any>;
 
@@ -126,30 +127,19 @@ const DynamicForm: React.FC<{
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto mt-8">
-      <h2 className="text-2xl font-bold mb-6">{schema.title}</h2>
-      {isSubmitted && (
-        <div
-          className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6"
-          role="alert"
-        >
-          <p className="font-bold">Form Already Submitted</p>
-          <p>
-            You have already submitted this form. The form is now read-only.
-          </p>
-        </div>
-      )}
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto mt-8 text-left">
       {schema.fields.map((field) => (
         <Fragment key={field.id}>{renderField(field)}</Fragment>
       ))}
       <button
         type="submit"
         disabled={isSubmitted}
-        className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
+        className={`px-4 py-2 text-base font-light text-stone-100 bg-matcha rounded-md hover:bg-[#3E4A46] transition-all duration-300 flex items-center justify-center ${
           isSubmitted ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >
-        {isSubmitted ? "Submitted" : "Submit"}
+        {isSubmitted ? "Submitted" : "Submit Form"}
+        <ArrowRight className="inline-block ml-2" size={20} />
       </button>
     </form>
   );

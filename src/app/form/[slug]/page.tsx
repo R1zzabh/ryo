@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { FormSchema } from "~~/lib/dsl";
 import DynamicForm from "~~/components/dynamic-form";
 import Link from "next/link";
@@ -6,6 +6,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "~~/lib/db";
 import { eq, and } from "drizzle-orm";
 import { forms } from "~~/lib/db/schema";
+import { ArrowRight } from "lucide-react";
 
 export default async function FormPage({
   params,
@@ -37,19 +38,26 @@ export default async function FormPage({
   console.log(userId);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">{schema.title}</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-stone-100 text-stone-800">
+      <main className="flex flex-col items-center w-full px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center">
+        <h1 className="text-4xl sm:text-5xl font-light tracking-tight mb-6 text-matcha">
+          {schema.title}
+        </h1>
+
         {isCreator && (
           <Link
             href={`/form/${params.slug}/responses`}
-            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out"
+            className="px-4 py-2 text-base font-light text-stone-100 bg-matcha rounded-md hover:bg-[#3E4A46] transition-all duration-300 mb-10"
           >
-            View Responses
+            View Responses{" "}
+            <ArrowRight className="inline-block ml-2" size={20} />
           </Link>
         )}
-      </div>
-      <DynamicForm slug={params.slug} formId={form.id} schema={schema} />
+
+        <div className="w-full max-w-3xl bg-stone-50 p-8 border border-stone-200 rounded-md">
+          <DynamicForm slug={params.slug} formId={form.id} schema={schema} />
+        </div>
+      </main>
     </div>
   );
 }
