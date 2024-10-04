@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useChat } from "ai/react";
+import { Send } from 'lucide-react';
 import ReactMarkdown from "react-markdown";
 
 interface ChatbotProps {
@@ -56,7 +57,7 @@ export function Chatbot({ responses, schema }: ChatbotProps) {
               </div>
             )
         )}
-        {isLoading && <div className="text-center">AI is thinking...</div>}
+        {isLoading && <div className="text-center">RYO is thinking...</div>}
         {error && (
           <div className="text-red-500">
             Error: {error.message}
@@ -74,7 +75,7 @@ export function Chatbot({ responses, schema }: ChatbotProps) {
             className="flex-1"
           />
           <Button type="submit" disabled={isLoading}>
-            Send
+            Send <Send className="ml-2" size={16} />
           </Button>
         </div>
       </form>

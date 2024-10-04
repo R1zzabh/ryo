@@ -28,6 +28,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { Search, ChevronLeft, ChevronRight, Columns } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -75,24 +76,36 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="rounded-md border">
-        <div className="flex justify-between items-center p-4 border-b">
-          <Input
-            placeholder={
-              filterColumn
-                ? `Filter ${filterColumn.id}...`
-                : "Search all columns..."
-            }
-            value={
-              (filterColumn?.getFilterValue() as string) ?? globalFilter ?? ""
-            }
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              handleFilterChange(event.target.value)
-            }
-            className="max-w-sm"
-          />
+        <div className="flex justify-between items-center mb-4 p-4">
+          <div className="relative max-w-sm w-full">
+            <Input
+              className="pl-8" // Add left padding to make room for the icon
+              placeholder={
+                filterColumn
+                  ? `Filter ${filterColumn.id}...`
+                  : "Search all columns..."
+              }
+              value={
+                (filterColumn?.getFilterValue() as string) ?? globalFilter ?? ""
+              }
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                handleFilterChange(event.target.value)
+              }
+            />
+            <Search
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+              size={18}
+            />
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">Columns</Button>
+              <Button
+                variant="outline"
+                className="ml-auto text-muted-foreground"
+              >
+                <Columns className="mr-2 text-muted-foreground" />
+                Columns
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {table
@@ -167,15 +180,21 @@ export function DataTable<TData, TValue>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            {" "}
+            <ChevronLeft className="mr-2" size={16} />
+            Prev
           </Button>
+          <span className="text-sm text-muted-foreground">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </span>
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            Next <ChevronRight className="ml-2" size={16} />
           </Button>
         </div>
       </div>
