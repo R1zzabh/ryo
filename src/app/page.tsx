@@ -1,5 +1,6 @@
 import { SignInButton } from "@clerk/nextjs";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { Logo } from "~~/components/logo";
 
 const features = [
@@ -32,12 +33,19 @@ export default function Home() {
           Ryo Forms harmonizes AI precision with intuitive design, transforming
           the way you create, refine, and analyze forms.
         </p>
-        <SignInButton forceRedirectUrl="/home" mode="modal">
+        {/* <SignInButton forceRedirectUrl="/home" mode="modal">
           <button className="px-8 py-3 text-lg font-light text-stone-100 bg-matcha rounded-md hover:bg-[#3E4A46] transition-all duration-300">
             Begin Your Journey{" "}
             <ArrowRight className="inline-block ml-2" size={20} />
           </button>
-        </SignInButton>
+        </SignInButton> */}
+
+        <Link href="/home">
+          <button className="px-8 py-3 text-lg font-light text-stone-100 bg-matcha rounded-md hover:bg-[#3E4A46] transition-all duration-300">
+            Begin Your Journey{" "}
+            <ArrowRight className="inline-block ml-2" size={20} />
+          </button>
+        </Link>
 
         <div className="mt-20 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => (
