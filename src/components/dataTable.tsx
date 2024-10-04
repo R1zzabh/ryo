@@ -74,40 +74,39 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="rounded-md border">
-        <Input
-          placeholder={filterColumn ? `Filter ${filterColumn.id}...` : "Search all columns..."}
-          value={(filterColumn?.getFilterValue() as string) ?? globalFilter ?? ""}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFilterChange(event.target.value)}
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter(
-                (column) => column.getCanHide()
-              )
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        
+        <div className="flex justify-between items-center mb-4 p-4">
+          <Input
+            placeholder={filterColumn ? `Filter ${filterColumn.id}...` : "Search all columns..."}
+            value={(filterColumn?.getFilterValue() as string) ?? globalFilter ?? ""}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFilterChange(event.target.value)}
+            className="max-w-sm"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+          Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+          .getAllColumns()
+          .filter((column) => column.getCanHide())
+          .map((column) => {
+            return (
+              <DropdownMenuCheckboxItem
+                key={column.id}
+                className="capitalize"
+                checked={column.getIsVisible()}
+                onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              >
+                {column.id}
+              </DropdownMenuCheckboxItem>
+            );
+          })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -146,27 +145,27 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
-        </div>
+      <div className="flex items-center justify-center space-x-2 py-4">
         <div className="space-x-2">
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+        variant="outline"
+        size="sm"
+        onClick={() => table.previousPage()}
+        disabled={!table.getCanPreviousPage()}
           >
-            Previous
+        Prev
           </Button>
+          <span className="text-sm text-muted-foreground">
+        Page {table.getState().pagination.pageIndex + 1} of{" "}
+        {table.getPageCount()}
+          </span>
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+        variant="outline"
+        size="sm"
+        onClick={() => table.nextPage()}
+        disabled={!table.getCanNextPage()}
           >
-            Next
+        Next
           </Button>
         </div>
       </div>
