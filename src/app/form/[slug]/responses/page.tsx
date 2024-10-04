@@ -5,7 +5,7 @@ import { db } from "~~/lib/db";
 import { forms, formResponses } from "~~/lib/db/schema";
 import { FormSchema } from "~~/lib/dsl";
 import { Table } from "./table";
-import { Chatbot } from "~~/components/chatbot"; 
+import { Chatbot } from "~~/components/chatbot";
 import { ExportToCsv } from "~~/app/form/[slug]/responses/export-to-csv";
 
 export default async function FormResponsesPage({
@@ -63,8 +63,10 @@ export default async function FormResponsesPage({
         </div>
       </div>
       <div className="w-1/3 pl-4 flex flex-col">
-        <h2 className="text-2xl font-bold mb-4">AI Assistant</h2>
-        <div className="flex-grow overflow-auto">
+        <div className="flex justify-center">
+          <h2 className="text-2xl font-bold mb-4">RYO AI</h2>
+        </div>
+        <div className="flex-grow overflow-auto rounded-lg border border-gray-300 p-4 bg-white shadow-md">
           <Chatbot responses={flattenedResponses} schema={schema} />
         </div>
       </div>
