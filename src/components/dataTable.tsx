@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo} from "react";
+import { useState, useMemo } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -27,7 +27,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
+} from "./ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -42,7 +42,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState("");
   const table = useReactTable({
     data,
     columns,
@@ -59,9 +59,10 @@ export function DataTable<TData, TValue>({
     onGlobalFilterChange: setGlobalFilter,
   });
 
-  const filterColumn = useMemo(() => 
-    filterColumnId ? table.getColumn(filterColumnId) : null
-  , [table, filterColumnId]);
+  const filterColumn = useMemo(
+    () => (filterColumnId ? table.getColumn(filterColumnId) : null),
+    [table, filterColumnId]
+  );
 
   const handleFilterChange = (value: string) => {
     if (filterColumn) {
@@ -74,40 +75,46 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="rounded-md border">
-        <Input
-          placeholder={filterColumn ? `Filter ${filterColumn.id}...` : "Search all columns..."}
-          value={(filterColumn?.getFilterValue() as string) ?? globalFilter ?? ""}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFilterChange(event.target.value)}
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter(
-                (column) => column.getCanHide()
-              )
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex justify-between items-center p-4 border-b">
+          <Input
+            placeholder={
+              filterColumn
+                ? `Filter ${filterColumn.id}...`
+                : "Search all columns..."
+            }
+            value={
+              (filterColumn?.getFilterValue() as string) ?? globalFilter ?? ""
+            }
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              handleFilterChange(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">Columns</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -131,14 +138,20 @@ export function DataTable<TData, TValue>({
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>

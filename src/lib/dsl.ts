@@ -101,3 +101,5 @@ export const FormSchema = z
     fields: z.array(Field).describe("Array of fields in the form"),
   })
   .describe("Form schema");
+
+export type FormSchema = z.infer<typeof FormSchema>;
