@@ -1,12 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo} from "react";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  VisibilityState,
   useReactTable,
   getPaginationRowModel,
+  ColumnFiltersState,
+  getFilteredRowModel,
+  VisibilityState,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -18,6 +20,7 @@ import {
 } from "./ui/table";
 
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 import {
   DropdownMenu,
@@ -29,27 +32,54 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filterColumnId?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  filterColumnId,
 }: DataTableProps<TData, TValue>) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState('');
   const table = useReactTable({
     data,
     columns,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       columnVisibility,
-    }
+      columnFilters,
+      globalFilter,
+    },
+    onGlobalFilterChange: setGlobalFilter,
   });
+
+  const filterColumn = useMemo(() => 
+    filterColumnId ? table.getColumn(filterColumnId) : null
+  , [table, filterColumnId]);
+
+  const handleFilterChange = (value: string) => {
+    if (filterColumn) {
+      filterColumn.setFilterValue(value);
+    } else {
+      setGlobalFilter(value);
+    }
+  };
 
   return (
     <div>
       <div className="rounded-md border">
+        <Input
+          placeholder={filterColumn ? `Filter ${filterColumn.id}...` : "Search all columns..."}
+          value={(filterColumn?.getFilterValue() as string) ?? globalFilter ?? ""}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFilterChange(event.target.value)}
+          className="max-w-sm"
+        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
