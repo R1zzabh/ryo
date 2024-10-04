@@ -1,13 +1,12 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   ColumnDef,
-  ColumnFiltersState,
-  getFilteredRowModel,
   flexRender,
   getCoreRowModel,
   VisibilityState,
   useReactTable,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -17,8 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { Input } from "./ui/input"
+
 import { Button } from "./ui/button";
+
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -29,115 +29,117 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  filterColumnId?: string; // Optional prop for specific column filtering
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  filterColumnId,
 }: DataTableProps<TData, TValue>) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
-
   const table = useReactTable({
     data,
     columns,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       columnVisibility,
-      columnFilters,
-      globalFilter,
-    },
-    onGlobalFilterChange: setGlobalFilter,
+    }
   });
 
-  // Find if the passed filterColumnId matches any column in the table
-  const filterColumn = useMemo(() => 
-    filterColumnId ? table.getColumn(filterColumnId) : null
-  , [table, filterColumnId]);
-
-  const handleFilterChange = (value: string) => {
-    if (filterColumn) {
-      filterColumn.setFilterValue(value);
-    } else {
-      setGlobalFilter(value);
-    }
-  };
-
   return (
-    <div className="rounded-md border">
-      <div className="flex items-center py-4 p-4">
-        <Input
-          placeholder={filterColumn ? `Filter ${filterColumn.id}...` : "Search all columns..."}
-          value={(filterColumn?.getFilterValue() as string) ?? globalFilter ?? ""}
-          onChange={(event) => handleFilterChange(event.target.value)}
-          className="max-w-sm px-5px"
-        />
+    <div>
+      <div className="rounded-md border">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="ml-auto">
-          Columns
-        </Button>
+            <Button variant="outline" className="ml-auto">
+              Columns
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-        {table
-          .getAllColumns()
-          .filter((column) => column.getCanHide())
-          .map((column) => (
-            <DropdownMenuCheckboxItem
-          key={column.id}
-          className="capitalize"
-          checked={column.getIsVisible()}
-          onCheckedChange={(value) => column.toggleVisibility(!!value)}
-            >
-          {column.id}
-            </DropdownMenuCheckboxItem>
-          ))}
+            {table
+              .getAllColumns()
+              .filter(
+                (column) => column.getCanHide()
+              )
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
                 ))}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
+        </div>
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
