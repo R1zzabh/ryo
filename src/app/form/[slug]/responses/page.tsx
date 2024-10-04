@@ -51,14 +51,18 @@ export default async function FormResponsesPage({
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 flex">
-      <div className="w-2/3 pr-4">
+    <div className="container mx-auto px-4 py-8 flex h-screen">
+      <div className="w-2/3 pr-4 flex flex-col">
         <h1 className="text-3xl font-bold mb-6">Responses for: {schema.title}</h1>
-        <Table responses={flattenedResponses} schema={schema} />
+        <div className="flex-grow overflow-auto">
+          <Table responses={flattenedResponses} schema={schema} />
+        </div>
       </div>
-      <div className="w-1/3 pl-4">
+      <div className="w-1/3 pl-4 flex flex-col">
         <h2 className="text-2xl font-bold mb-4">AI Assistant</h2>
-        <Chatbot responses={flattenedResponses} schema={schema} />
+        <div className="flex-grow overflow-auto">
+          <Chatbot responses={flattenedResponses} schema={schema} />
+        </div>
       </div>
     </div>
   );
