@@ -1,6 +1,7 @@
 "use client";
 
 import { z } from "zod";
+import React, { useState } from "react";
 import {
   ShortAnswerField,
   LongAnswerField,
@@ -8,7 +9,9 @@ import {
   NumberField,
   MultipleChoiceField,
   MultiSelectField,
+  DateField,
 } from "~~/lib/dsl";
+import { Calendarcomp } from "./ui/calendar";
 
 type FieldProps<T extends z.ZodType<any, any>> = {
   field: z.infer<T>;
@@ -177,3 +180,49 @@ export const MultiSelectComponent: React.FC<
     </div>
   </div>
 );
+
+export const DateComponent: React.FC<FieldProps<typeof DateField>> = ({
+  field,
+  value,
+  onChange,
+}) => {
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  const handleDateSelect = (date: Date) => {
+    // Adjust the date to local timezone and format it
+    const localDate = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000
+    );
+    const formattedDate = localDate.toISOString().split("T")[0];
+    onChange(formattedDate);
+    setShowCalendar(false);
+  };
+
+  return (
+    <div className="mb-6 relative">
+      <Label htmlFor={field.id} required={field.required}>
+        {field.label}
+      </Label>
+      <input
+        type="text"
+        id={field.id}
+        name={field.id}
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={field.placeholder}
+        required={field.required}
+        className={inputClasses}
+        onClick={() => setShowCalendar(true)}
+        readOnly
+      />
+      {showCalendar && (
+        <div className="absolute z-10 mt-1">
+          <Calendarcomp
+            onSelect={handleDateSelect}
+            selectedDate={value ? new Date(value) : undefined}
+          />
+        </div>
+      )}
+    </div>
+  );
+};

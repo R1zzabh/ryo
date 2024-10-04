@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { z } from "zod";
 import { FormSchema } from "~~/lib/dsl";
 import { generateShortId } from "~~/lib/utils";
@@ -11,6 +11,7 @@ import {
   NumberComponent,
   MultipleChoiceComponent,
   MultiSelectComponent,
+  DateComponent,
 } from "./form-components";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
@@ -65,13 +66,17 @@ const DynamicForm: React.FC<{
     return formData[field.condition.field] === field.condition.value;
   };
 
-  const renderField = (field: z.infer<typeof FormSchema>["fields"][number]) => {
+  const renderField = (
+    field: z.infer<typeof FormSchema>["fields"][number],
+    value: any,
+    onChange: (value: any) => void
+  ) => {
     if (!isFieldVisible(field)) return null;
 
     const commonProps = {
       field,
-      value: formData[field.id],
-      onChange: (value: any) => handleChange(field.id, value),
+      value,
+      onChange,
       disabled: isSubmitted,
     };
 
@@ -94,6 +99,11 @@ const DynamicForm: React.FC<{
       case "multiSelect":
         // @ts-expect-error: Type mismatch in field props
         return <MultiSelectComponent {...commonProps} />;
+      case "date":
+        return (
+          <DateComponent field={field} value={value} onChange={onChange} />
+        );
+
       default:
         return null;
     }
@@ -129,7 +139,11 @@ const DynamicForm: React.FC<{
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto mt-8 text-left">
       {schema.fields.map((field) => (
-        <Fragment key={field.id}>{renderField(field)}</Fragment>
+        <Fragment key={field.id}>
+          {renderField(field, formData[field.id], (value: any) =>
+            handleChange(field.id, value)
+          )}
+        </Fragment>
       ))}
       <button
         type="submit"

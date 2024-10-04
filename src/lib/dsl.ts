@@ -73,6 +73,16 @@ export const MultiSelectField = BaseField.extend({
   options: z.array(z.string()).describe("Options for the multi-select field"),
 }).describe("Multi-select field schema");
 
+// Add this new field type after the existing field definitions
+export const DateField = BaseField.extend({
+  type: z.literal("date").describe("Field type: date"),
+  label: z.string().describe("Label for the date field"),
+  placeholder: z
+    .string()
+    .optional()
+    .describe("Placeholder text for the date field"),
+}).describe("Date field schema");
+
 export const Field = z
   .union([
     ShortAnswerField,
@@ -81,6 +91,7 @@ export const Field = z
     NumberField,
     MultipleChoiceField,
     MultiSelectField,
+    DateField,
   ])
   .describe("Union of all possible field types");
 

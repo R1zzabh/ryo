@@ -46,13 +46,15 @@ The form should be structured as follows:
    - Properties: id, type, label, required, options
 6. multiSelect
    - Properties: id, type, label, required, options
+7. date
+   - Properties: id, type, label, required, placeholder
 
 ## Rules and Guidelines
 1. The "id" should be a unique, camelCase string for each field.
-2. The "type" must be one of the six types listed above.
+2. The "type" must be one of the seven types listed above.
 3. The "label" should be clear and descriptive.
 4. Set the "required" property based on the importance of the field.
-5. Use "placeholder" when appropriate, especially for text fields.
+5. Use "placeholder" when appropriate, especially for text and date fields.
 6. The "options" array is only used for multipleChoice and multiSelect types.
 7. Use the "condition" object when a field's visibility depends on another field's value.
 
