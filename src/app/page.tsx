@@ -1,5 +1,6 @@
 import { SignInButton } from "@clerk/nextjs";
 import { ArrowRight } from "lucide-react";
+import { Logo } from "~~/components/logo";
 
 const features = [
   {
@@ -21,8 +22,9 @@ const features = [
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-stone-100 text-stone-800">
+    <div className="flex flex-col items-center justify-center min-h-screen py-12">
       <main className="flex flex-col items-center w-full px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center">
+        <Logo className="w-24 h-24 mb-4" />
         <h1 className="text-5xl sm:text-6xl font-light tracking-tight mb-6 text-matcha">
           Craft Forms with Zen-like Simplicity
         </h1>
